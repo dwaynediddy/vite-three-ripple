@@ -1,10 +1,11 @@
-import React, { Suspense, useMemo, useCallback } from 'react'
+import React, { Suspense, useMemo, useCallback, useRef } from 'react'
 import * as THREE from 'three'
-import { Canvas, useLoader } from 'react-three-fiber'
+import { Canvas, useLoader, useFrame  } from 'react-three-fiber'
 import circle from './assets/circle.png'
 
 function Points() {
   const imgTex = useLoader(THREE.TextureLoader, circle)
+  const bufferRef = useRef()
 
   let t = 0
   let f = 0.002
@@ -30,10 +31,27 @@ function Points() {
       return new Float32Array(positions)
   }, [count, sep, graph])
 
+  useFrame(() => {
+    t -= 15
+    const positions = bufferRef.current.array
+
+    let i = 0
+    for(let xi = 0; xi < count; xi++){
+        for(let zi = 0; zi < count; zi++){
+            let x = sep * (xi - count / 2)
+            let z = sep * (zi - count / 2)
+            positions[i + 1] = graph(x, z)
+            i += 3
+        }
+    }
+    bufferRef.current.needsUpdate = true
+  })
+
   return(
       <points>
           <bufferGeometry attach='geometry'>
               <bufferAttribute 
+              ref={bufferRef}
                   attachObject={['attributes', 'position']} 
                   array={positions}
                   count={positions.length / 3} 
