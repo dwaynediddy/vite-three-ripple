@@ -6,6 +6,7 @@ import circle from './assets/circle.png'
 
 extend({ OrbitControls })
 
+//camera controls for mouse movement
 function CameraControls() {
 const {
     camera,
@@ -20,7 +21,7 @@ useFrame(() =>  controlsRef.current.update())
             ref={controlsRef}
             args = {[camera, domElement]}
             autoRotate
-            autoRotateSpeed={-0.2}
+            autoRotateSpeed={-0.3}
         />
     )
 }
@@ -57,6 +58,8 @@ function Points() {
 
   useFrame(() => {
     t -= 15
+    
+    a = 50
     const positions = bufferRef.current.array
 
     let i = 0
@@ -85,7 +88,7 @@ function Points() {
           <pointsMaterial 
               attach='material'
               map={imgTex}
-              color={0x00AAFF}
+              color={0xFF6500}
               size={0.5}
               sizeAttenuation
               transparent={false}
