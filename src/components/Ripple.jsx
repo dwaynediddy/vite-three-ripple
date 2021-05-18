@@ -1,7 +1,31 @@
 import React, { Suspense, useMemo, useCallback, useRef } from 'react'
 import * as THREE from 'three'
-import { Canvas, useLoader, useFrame  } from 'react-three-fiber'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { Canvas, useLoader, extend, useFrame, useThree  } from 'react-three-fiber'
 import circle from './assets/circle.png'
+
+extend({ OrbitControls })
+
+function CameraControls() {
+const {
+    camera,
+    gl: {domElement}
+} = useThree()
+
+const controlsRef = useRef()
+useFrame(() =>  controlsRef.current.update())
+
+    return (
+        <orbitControls
+            ref={controlsRef}
+            args = {[camera, domElement]}
+            autoRotate
+            autoRotateSpeed={-0.2}
+        />
+    )
+}
+
+ 
 
 function Points() {
   const imgTex = useLoader(THREE.TextureLoader, circle)
@@ -81,6 +105,7 @@ function AnimateCanvas() {
           <Suspense fallback={null}>
               <Points />
           </Suspense>
+          <CameraControls />
       </Canvas>
   )
 }
